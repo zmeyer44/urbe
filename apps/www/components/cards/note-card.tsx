@@ -1,7 +1,9 @@
+'use client';
 import { Avatar } from '@repo/design-system/components/ui/avatar';
 import { Button } from '@repo/design-system/components/ui/button';
 import { cn, relativeTime } from '@repo/design-system/lib/utils/functions';
 import { MessageCircleIcon, MoreHorizontalIcon, ZapIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import type { ComponentProps } from 'react';
 
 type NoteCardProps = ComponentProps<'div'> & {
@@ -21,6 +23,7 @@ export function NoteCard({
   className,
   ...noteProps
 }: NoteCardProps) {
+  const router = useRouter();
   return (
     <div
       className={cn(
@@ -30,7 +33,14 @@ export function NoteCard({
       {...noteProps}
     >
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            router.push(`/${author.nostrAddress}`);
+          }}
+          className="flex cursor-pointer items-center gap-2"
+        >
           <Avatar
             src={author.picture}
             name={author.name}
@@ -46,7 +56,7 @@ export function NoteCard({
               </span>
             )}
           </div>
-        </div>
+        </button>
         <div className="flex items-center gap-2">
           <p className="font-medium text-[.6rem] text-foreground/70 leading-none">
             {relativeTime(new Date(timestamp))}
