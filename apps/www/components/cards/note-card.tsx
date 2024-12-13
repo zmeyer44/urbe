@@ -52,7 +52,7 @@ export function NoteCard({
             {relativeTime(new Date(timestamp))}
           </p>
           <Button
-            variant="layer-1"
+            variant="ghost"
             size="icon"
             className="size-6 text-foreground/70"
           >
@@ -63,12 +63,12 @@ export function NoteCard({
       <div className="grow">
         <p className="text-[.8rem] leading-5">{content}</p>
       </div>
-      <div className="flex items-center gap-1 text-foreground/70">
-        <Button variant="layer-1" size="sm" className="h-4 w-auto px-2 py-0.5">
+      <div className="-my-2 flex items-center gap-1 text-foreground/70">
+        <Button variant="ghost" size="sm" className="p-2">
           <MessageCircleIcon className="!size-3.5" />
           <span className="text-[.6rem] leading-none">1</span>
         </Button>
-        <Button variant="layer-1" size="sm" className="h-4 w-auto px-2 py-0.5">
+        <Button variant="ghost" size="sm" className="p-2">
           <ZapIcon className="!size-3.5" />
           <span className="text-[.6rem] leading-none">1</span>
         </Button>

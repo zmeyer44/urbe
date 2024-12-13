@@ -29,7 +29,10 @@ export default async function Page({
         <NoteActions />
       </div>
       <div className="grow">
-        <Feed gridProps={{ minWidth: 375 }} />
+        <Feed
+          gridProps={{ minWidth: 375 }}
+          noteCardProps={{ className: 'bg-opacity-40' }}
+        />
       </div>
     </div>
   );
