@@ -2,7 +2,6 @@ import { SidebarProvider } from '@repo/design-system/components/ui/sidebar';
 import type { ReactNode } from 'react';
 import { ContainerQueriesHelper } from './_layout/container-queries-helper';
 import { GlobalSidebar } from './_layout/sidebar';
-import '@/styles/colors.css';
 
 type AppLayoutProperties = {
   readonly children: ReactNode;
