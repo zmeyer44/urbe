@@ -61,7 +61,7 @@
     --sidebar-ring: 193 80% 35%;
   }
   .dark {
-   --background: 226 60% 10%;
+    --background: 226 60% 10%;
     --foreground: 20 60% 99%;
 
     --layer-1: 218 100% 16%;

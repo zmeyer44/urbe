@@ -10,7 +10,7 @@ type AppLayoutProperties = {
 const AppLayout = ({ children }: AppLayoutProperties) => {
   return (
     <SidebarProvider
-      className="bg-background"
+      className="bg-background text-foreground"
       style={
         {
           '--sidebar-width': '19rem',
