@@ -441,7 +441,7 @@ export function GlobalSidebar({ children }: { children: React.ReactNode }) {
         {isMobile && (
           <Button
             size="icon"
-            className="fixed right-2 bottom-2 z-50 w-auto rounded-full bg-sidebar p-3 text-sidebar-foreground hover:bg-sidebar-accent"
+            className="fixed right-2 bottom-2 z-50 w-auto rounded-full bg-layer-2 p-3 text-sidebar-foreground shadow-lg hover:bg-layer-2-accent"
             onClick={() => toggleSidebar()}
           >
             <MenuIcon className="size-4" />
