@@ -13,12 +13,8 @@ export function Feed({ gridProps = { minWidth: 375 }, filter }: FeedProps) {
   return (
     <Grid {...gridProps}>
       {demoNotes.map((note, index) => (
-        <Link href={`/n/${note.id}`} key={index}>
-          <NoteCard
-            author={note.author}
-            content={note.content}
-            timestamp={note.timestamp}
-          />
+        <Link href={`/n/${note.id}`} key={index} className="flex">
+          <NoteCard note={note} className="flex-1" />
         </Link>
       ))}
     </Grid>

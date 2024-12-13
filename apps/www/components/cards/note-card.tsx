@@ -1,21 +1,34 @@
 import { Avatar } from '@repo/design-system/components/ui/avatar';
 import { Button } from '@repo/design-system/components/ui/button';
-import { relativeTime } from '@repo/design-system/lib/utils/functions';
+import { cn, relativeTime } from '@repo/design-system/lib/utils/functions';
 import { MessageCircleIcon, MoreHorizontalIcon, ZapIcon } from 'lucide-react';
+import type { ComponentProps } from 'react';
 
-type NoteCardProps = {
-  author: {
-    name: string;
-    picture?: string;
-    nostrAddress?: string;
+type NoteCardProps = ComponentProps<'div'> & {
+  note: {
+    author: {
+      name: string;
+      picture?: string;
+      nostrAddress?: string;
+    };
+    content: string;
+    timestamp: number;
   };
-  content: string;
-  timestamp: number;
 };
 
-export function NoteCard({ author, content, timestamp }: NoteCardProps) {
+export function NoteCard({
+  note: { author, content, timestamp },
+  className,
+  ...noteProps
+}: NoteCardProps) {
   return (
-    <div className="flex flex-col gap-2.5 rounded-lg bg-layer-1 p-2.5">
+    <div
+      className={cn(
+        'flex flex-col gap-2.5 rounded-lg bg-layer-1 p-2.5',
+        className
+      )}
+      {...noteProps}
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Avatar
