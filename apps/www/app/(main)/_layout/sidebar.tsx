@@ -40,7 +40,6 @@ import {
   BookOpenIcon,
   BotIcon,
   ChevronRightIcon,
-  CircleChevronRight,
   Command,
   File,
   FolderIcon,
@@ -48,6 +47,7 @@ import {
   Inbox,
   LifeBuoyIcon,
   MapIcon,
+  MenuIcon,
   MoreHorizontalIcon,
   PieChartIcon,
   Send,
@@ -263,7 +263,7 @@ export function GlobalSidebar({ children }: { children: React.ReactNode }) {
                       <SidebarMenuButton
                         tooltip={{
                           children: item.title,
-                          hidden: false,
+                          hidden: isMobile,
                         }}
                         className="px-2.5 md:px-2"
                       >
@@ -437,16 +437,14 @@ export function GlobalSidebar({ children }: { children: React.ReactNode }) {
           </SidebarContent>
         </Sidebar>
       </Sidebar>
-      <SidebarInset
-        className={cn('bg-unset pt-[calc(36px_+_8px)] pl-2 md:pt-0 md:pl-0')}
-      >
+      <SidebarInset className={cn('bg-unset pl-2 md:pl-0')}>
         {isMobile && (
           <Button
             size="icon"
-            className="absolute top-2 left-0 z-50 w-auto rounded-r-full bg-sidebar p-3 pl-5 text-sidebar-foreground hover:bg-sidebar-accent"
+            className="fixed right-2 bottom-2 z-50 w-auto rounded-full bg-sidebar p-3 text-sidebar-foreground hover:bg-sidebar-accent"
             onClick={() => toggleSidebar()}
           >
-            <CircleChevronRight className="size-4" />
+            <MenuIcon className="size-4" />
           </Button>
         )}
 
