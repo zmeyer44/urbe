@@ -1,0 +1,45 @@
+{
+  "name": "www",
+  "private": true,
+  "scripts": {
+    "dev-3000": "next dev -p 3000 --turbopack",
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "analyze": "ANALYZE=true pnpm build",
+    "test": "vitest run",
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "format": "biome lint --write .",
+    "lint": "biome lint .",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+  },
+  "dependencies": {
+    "@prisma/client": "6.0.1",
+    "@repo/design-system": "workspace:*",
+    "@repo/env": "workspace:*",
+    "@repo/next-config": "workspace:*",
+    "@repo/tailwind-config": "workspace:*",
+    "@repo/schemas": "workspace:*",
+    "@sentry/nextjs": "^8.42.0",
+    "fuse.js": "^7.0.0",
+    "import-in-the-middle": "^1.11.3",
+    "lucide-react": "^0.468.0",
+    "next": "15.1.1-canary.0",
+    "next-themes": "^0.4.4",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "require-in-the-middle": "^7.4.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/react": "^16.1.0",
+    "@types/node": "22.10.1",
+    "@types/react": "19.0.1",
+    "@types/react-dom": "19.0.1",
+    "jsdom": "^25.0.1",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
