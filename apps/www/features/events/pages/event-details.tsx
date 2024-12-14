@@ -18,10 +18,9 @@ export function EventDetailsPage() {
     location: 'Event Location',
     geohash: '2853',
     hostedBy: 'Event Hosted By',
-    date: 'Event Date',
     pubkey: 'Event Hosted By',
-    start: 'Event Date',
-    end: 'Event Date',
+    start: new Date().toISOString(),
+    end: new Date().toISOString(),
   };
 
   return (
@@ -67,7 +66,7 @@ export function EventDetailsPage() {
               <DateSection event={event} />
               {/* Location */}
               <div className="flex items-center gap-3">
-                <PinIcon />
+                <PinIcon className="border-layer-1" />
                 {/* Location Info */}
               </div>
             </div>

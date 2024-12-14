@@ -9,10 +9,12 @@ export const config: Config = {
   darkMode: ['class'],
   content: [
     './node_modules/@repo/design-system/components/**/*.{ts,tsx}',
+    './node_modules/@repo/design-system/icons/**/*.{ts,tsx}',
     './node_modules/@repo/design-system/lib/**/*.{ts,tsx}',
     './node_modules/@repo/design-system/index.tsx',
     './components/**/*.{ts,tsx}',
     './containers/**/*.{ts,tsx}',
+    './features/**/*.{ts,tsx}',
     './lib/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './providers/**/*.{ts,tsx}',

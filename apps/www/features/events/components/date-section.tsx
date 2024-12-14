@@ -14,7 +14,7 @@ export function DateSection({ event }: DateSectionProps) {
   const endDate = event.end ? new Date(event.end) : null;
   return (
     <div className="flex items-center gap-3">
-      <DateIcon date={startDate} />
+      <DateIcon date={startDate} className="border-layer-1" />
       <div className="">
         <p className="font-semibold @xl/main:text-base text-sm">
           {formatDate(startDate, 'dddd, MMMM Do')}

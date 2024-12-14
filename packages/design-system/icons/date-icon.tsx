@@ -1,16 +1,29 @@
-import { formatDate } from '@repo/design-system/lib/utils';
+import { cn, formatDate } from '@repo/design-system/lib/utils';
+import type { ComponentProps } from 'react';
 
-type SmallCalendarIconProps = {
+type SmallCalendarIconProps = ComponentProps<'div'> & {
   date: Date;
 };
-export function DateIcon({ date }: SmallCalendarIconProps) {
+export function DateIcon({
+  date,
+  className,
+  ...props
+}: SmallCalendarIconProps) {
   return (
-    <div className="center min-w-10 shrink-0 overflow-hidden rounded-sm border bg-background text-muted-foreground">
-      <div className="w-full text-center">
-        <div className="bg-muted p-[2px] font-semibold text-[10px] uppercase">
-          {formatDate(date, 'MMM')}
+    <div
+      className={cn(
+        'center aspect-square min-w-10 shrink-0 overflow-hidden rounded-md border bg-background text-muted-foreground',
+        className
+      )}
+      {...props}
+    >
+      <div className="flex w-full flex-col text-center">
+        <div className="center bg-layer-1 p-[2px]">
+          <span className="font-semibold text-[11px] text-muted-foreground leading-none">
+            {formatDate(date, 'MMM')}
+          </span>
         </div>
-        <div className="pb-[2px] text-center font-semibold text-[14px] text-foreground">
+        <div className="grow pb-[2px] text-center font-semibold text-[14px] text-foreground">
           {formatDate(date, 'D')}
         </div>
       </div>
