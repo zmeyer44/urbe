@@ -131,4 +131,7 @@
   body {
     @apply min-h-[100dvh];
   }
+  .center {
+    @apply flex items-center justify-center;
+  }
 }
