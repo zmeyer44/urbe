@@ -4,6 +4,8 @@ import { z } from 'zod';
 const server: Parameters<typeof createEnv>[0]['server'] = {
   DATABASE_URL: z.string().min(1).url(),
 
+  DEFAULT_RELAYS: z.string().min(1).optional(),
+
   // Added by Vercel
   VERCEL: z.string().optional(),
   NEXT_RUNTIME: z.enum(['nodejs', 'edge']).optional(),
@@ -34,5 +36,7 @@ export const env = createEnv({
 
     NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL:
       process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL,
+
+    DEFAULT_RELAYS: process.env.DEFAULT_RELAYS,
   },
 });

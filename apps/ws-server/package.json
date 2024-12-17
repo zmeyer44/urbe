@@ -1,0 +1,38 @@
+{
+  "name": "ws-server",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "dev": "nodemon --exec \"node -r dotenv/config -r esbuild-register ./src/index.ts\" -e .ts",
+    "lint": "tsc --noEmit && eslint \"src/**/*.ts*\" --max-warnings 0",
+    "start": "node -r dotenv/config -r esbuild-register ./src/index.ts"
+  },
+  "dependencies": {
+    "@nostr-dev-kit/ndk": "^2.10.7",
+    "@repo/design-system": "workspace:*",
+    "@repo/env": "workspace:*",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "morgan": "^1.10.0",
+    "nostr-tools": "^2.10.4",
+    "websocket-polyfill": "^0.0.3",
+    "zod": "^3.23.8",
+    "zod-fetch": "^0.1.1"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/body-parser": "^1.19.5",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^20.11.24",
+    "dotenv": "^16.4.7",
+    "esbuild": "^0.20.1",
+    "esbuild-register": "^3.5.0",
+    "nodemon": "^3.1.0",
+    "typescript": "5.5.4"
+  }
+}
