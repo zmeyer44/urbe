@@ -24,7 +24,7 @@ export function EventDetailsPage() {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl @2xl/main:flex-row flex-col @3xl/main:gap-x-7 gap-x-5 gap-y-3 p-4 md:p-10">
+    <div className="mx-auto flex w-full max-w-5xl @2xl/main:flex-row flex-col @3xl/main:gap-x-7 gap-x-5 gap-y-3 p-4">
       <div className="mx-auto flex w-full @2xl/main:max-w-[300px] @3xl/main:max-w-[330px] max-w-[400px] flex-col gap-y-5">
         {event.image && (
           <div className="center relative overflow-hidden rounded-lg bg-gradient-to-t pb-[100%]">

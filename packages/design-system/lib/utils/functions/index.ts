@@ -3,3 +3,4 @@ export * from './dates';
 export * from './general';
 export * from './metadata';
 export * from './urls';
+export * from './color';
