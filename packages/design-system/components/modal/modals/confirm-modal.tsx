@@ -22,11 +22,10 @@ export function ConfirmModal({
     <Template
       title={title}
       footer={
-        <div className="flex items-center justify-end gap-x-3">
+        <div className="flex flex-1 items-center justify-between gap-x-3">
           <Button onClick={() => modal?.hide()} variant={'outline'}>
             Cancel
           </Button>
-
           <Button onClick={onConfirm} {...buttonProps}>
             Confirm
           </Button>

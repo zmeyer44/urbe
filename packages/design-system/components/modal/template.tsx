@@ -16,7 +16,7 @@ export function Template({
   return (
     <div
       className={cn(
-        'isolate w-full rounded-md bg-background md:max-w-md md:border md:border-stone-200 md:shadow',
+        'isolate w-full rounded-md bg-background md:max-w-md md:border md:border-layer-1 md:shadow',
         className
       )}
       {...props}
@@ -27,11 +27,25 @@ export function Template({
         )}
         {children}
       </div>
-      {!!footer && (
-        <div className="flex items-center justify-end rounded-b-lg border-stone-200 border-t bg-stone-50 p-3 md:px-10">
-          {footer}
-        </div>
+      {!!footer && <FormFooter>{footer}</FormFooter>}
+    </div>
+  );
+}
+
+export function FormFooter({
+  children,
+  className,
+  ...props
+}: ComponentProps<'div'>) {
+  return (
+    <div
+      className={cn(
+        'flex items-center justify-end rounded-b-lg border-layer-1 border-t bg-layer-1/40 p-3 md:px-8',
+        className
       )}
+      {...props}
+    >
+      {children}
     </div>
   );
 }
