@@ -15,7 +15,7 @@ const defaultRelays = [
   'wss://nostr.mom',
   'wss://e.nos.lol',
 ];
-export const createServer = (ndk: NDK): Express => {
+export const createServer = (): Express => {
   const app = express();
   const activePubkey =
     '1739d937dc8c0c7370aa27585938c119e25c41f6c441a5d34c6d38503e3136ef';
@@ -33,6 +33,12 @@ export const createServer = (ndk: NDK): Express => {
       return res.json({ ok: true });
     })
     .get('/', async (req, res) => {
+      const urlSearchParams = new URLSearchParams(
+        req.query as Record<string, string>
+      );
+      if (urlSearchParams.size === 0 && !req.body) {
+        return res.status(200).send('Welcome to Nostr Http Proxy');
+      }
       const ndk = new NDK({
         explicitRelayUrls: defaultRelays,
       });
