@@ -72,6 +72,8 @@ export const createServer = (): Express => {
             filter.until = Number(value);
           } else if (key === 'since') {
             filter.since = Number(value);
+          } else if (key === 'limit') {
+            filter.limit = Number(value);
           }
         });
 
@@ -99,7 +101,6 @@ export const createServer = (): Express => {
         }
         await ndk.connect();
       }
-
       const events = await ndk.fetchEvents({
         ...parsed.data.filter,
       });
