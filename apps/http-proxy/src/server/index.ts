@@ -5,7 +5,7 @@ import cors from 'cors';
 import express, { type Express } from 'express';
 import morgan from 'morgan';
 // @ts-ignore
-import { getPublicKey, nip19 } from 'nostr-tools';
+import { getPublicKey, nip05, nip19 } from 'nostr-tools';
 
 const defaultRelays = [
   'wss://relay.nostr.band',
@@ -71,13 +71,11 @@ export const createServer = (ndk: NDK): Express => {
           }
         });
 
-        console.log(filter);
-
         parsed = ProxySchema.safeParse({
           relays,
           filter,
         });
-        console.log(parsed);
+
         if (!parsed.success) {
           return res
             .status(400)
@@ -135,7 +133,20 @@ export const createServer = (ndk: NDK): Express => {
         explicitRelayUrls: defaultRelays,
       });
       await ndk.connect();
-      if (req.params.slug.startsWith('npub')) {
+      // regex check for email
+      if (req.params.slug.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+        const nip05Response = await nip05.queryProfile(req.params.slug);
+        if (nip05Response) {
+          const pubkey = nip05Response.pubkey;
+          const user = ndk.getUser({
+            pubkey,
+          });
+          await user.fetchProfile();
+          return res.json(user.profile);
+        }
+        return res.status(404).json({ message: 'User not found' });
+      }
+      if (req.params.slug.startsWith('n')) {
         const decode = nip19.decode(req.params.slug);
         if (decode.type === 'npub') {
           const pubkey = decode.data;
