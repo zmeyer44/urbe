@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nostr HTTP Proxy API Documentation</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .endpoint {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .method {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .get { background: #e3f2fd; }
+        .post { background: #e8f5e9; }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Nostr HTTP Proxy API Documentation</h1>
+    
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <h2>/status</h2>
+        <p>Check if the API is running.</p>
+        <p><strong>Response:</strong> <code>{ "ok": true }</code></p>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <h2>/</h2>
+        <p>Fetch Nostr events using query parameters or request body.</p>
+        <p><strong>Query Parameters:</strong></p>
+        <ul>
+            <li><code>relay</code>: Relay URLs (can be multiple)</li>
+            <li><code>ids</code>: Event IDs</li>
+            <li><code>authors</code>: Author public keys</li>
+            <li><code>kinds</code>: Event kinds (numbers)</li>
+            <li><code>until</code>: Timestamp upper bound</li>
+            <li><code>since</code>: Timestamp lower bound</li>
+        </ul>
+    </div>
+
+    <div class="endpoint">
+        <span class="method post">POST</span>
+        <h2>/</h2>
+        <p>Fetch Nostr events using request body.</p>
+        <p><strong>Request Body Schema:</strong></p>
+        <pre><code>{
+  relays?: string[],
+  filter: {
+    ids?: string[],
+    authors?: string[],
+    kinds?: number[],
+    until?: number,
+    since?: number,
+    [#a-Z]?: string[]
+  }
+}</code></pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <h2>/:slug</h2>
+        <p>Fetch user profiles and events using various identifiers.</p>
+        <p><strong>Supported Formats:</strong></p>
+        <ul>
+            <li>Nostr address (NIP-05)</li>
+            <li>Pubkey</li>
+            <li>npub</li>
+            <li>nprofile (Profile with optional relays)</li>
+            <li>note (Note ID)</li>
+            <li>naddr (Parameterized replaceable event)</li>
+            <li>nevent (Event with optional relays)</li>
+            <li>nsec (Secret key [NOT RECOMMENDED])</li>
+        </ul>
+    </div>
+
+    <footer>
+        <p><small>Powered by NDK (Nostr Development Kit)</small></p>
+    </footer>
+</body>
+</html>

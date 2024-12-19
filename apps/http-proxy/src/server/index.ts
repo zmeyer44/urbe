@@ -33,8 +33,11 @@ export const createServer = (): Express => {
       const urlSearchParams = new URLSearchParams(
         req.query as Record<string, string>
       );
-      if (urlSearchParams.size === 0 && !req.body) {
-        return res.status(200).send('Welcome to Nostr Http Proxy');
+
+      if (urlSearchParams.size === 0 && !Object.keys(req.body).length) {
+        return res
+          .status(200)
+          .sendFile('index.html', { root: `${__dirname}/../pages` });
       }
       const ndk = new NDK({
         explicitRelayUrls: defaultRelays,
