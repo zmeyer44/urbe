@@ -24,7 +24,11 @@ export const FilterSchema = z
       })
   );
 
+export type Filter = z.infer<typeof FilterSchema>;
+
 export const ProxySchema = z.object({
   relays: z.array(z.string()).optional(),
   filter: FilterSchema,
 });
+
+export type Proxy = z.infer<typeof ProxySchema>;

@@ -1,6 +1,6 @@
 import NDK, { NDKRelay } from '@nostr-dev-kit/ndk';
 import { env } from '@repo/env';
-import { ProxySchema } from '@repo/schemas/nostr';
+import { type Filter, ProxySchema } from '@repo/schemas/nostr';
 import { json, urlencoded } from 'body-parser';
 import cors from 'cors';
 import express, { type Express } from 'express';
@@ -26,7 +26,79 @@ export const createServer = (ndk: NDK): Express => {
     .get('/status', (_, res) => {
       return res.json({ ok: true });
     })
-    .post('/proxy', async (req, res) => {
+    .get('/', async (req, res) => {
+      const defaultRelays = env.DEFAULT_RELAYS.split(',');
+      const ndk = new NDK({
+        explicitRelayUrls: defaultRelays,
+      });
+      let parsed = ProxySchema.safeParse(req.body);
+      if (!parsed.success) {
+        // Check url search params
+        const urlSearchParams = new URLSearchParams(
+          req.query as Record<string, string>
+        );
+        if (urlSearchParams.size === 0) {
+          return res
+            .status(400)
+            .json({ message: 'Invalid request', error: parsed.error.message });
+        }
+        const relays = urlSearchParams.getAll('relay');
+        const filterStringArrayKeys = ['ids', 'authors'];
+
+        const filter: Filter = {};
+        urlSearchParams.forEach((value, key) => {
+          if (filterStringArrayKeys.includes(key) || key.match(/^#d$/)) {
+            if (filter[key]) {
+              filter[key].push(value);
+            } else {
+              filter[key] = [value];
+            }
+          } else if (key === 'kinds') {
+            if (filter.kinds) {
+              filter.kinds.push(Number(value));
+            } else {
+              filter.kinds = [Number(value)];
+            }
+          } else if (key === 'until') {
+            filter.until = Number(value);
+          } else if (key === 'since') {
+            filter.since = Number(value);
+          }
+        });
+
+        console.log(filter);
+
+        parsed = ProxySchema.safeParse({
+          relays,
+          filter,
+        });
+        console.log(parsed);
+        if (!parsed.success) {
+          return res
+            .status(400)
+            .json({ message: 'Invalid request', error: parsed.error.message });
+        }
+      }
+      if (Object.keys(parsed.data?.filter || {}).length === 0) {
+        return res
+          .status(400)
+          .json({ message: 'Invalid request', error: 'No filter provided' });
+      }
+
+      if (parsed.data.relays) {
+        for (const relayUrl of parsed.data.relays) {
+          ndk.pool.addRelay(new NDKRelay(relayUrl));
+        }
+        await ndk.connect();
+      }
+
+      const events = await ndk.fetchEvents({
+        ...parsed.data.filter,
+      });
+      const eventsArray = Array.from(events).map((event) => event.rawEvent());
+      return res.json(eventsArray);
+    })
+    .post('/', async (req, res) => {
       const defaultRelays = env.DEFAULT_RELAYS.split(',');
       const ndk = new NDK({
         explicitRelayUrls: defaultRelays,
