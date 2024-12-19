@@ -133,14 +133,15 @@ export const createServer = (): Express => {
       const eventsArray = Array.from(events).map((event) => event.rawEvent());
       return res.json(eventsArray);
     })
-    .get('/:slug', async (req, res) => {
+    .get('/:identifier', async (req, res) => {
+      const identifier = req.params.identifier;
       const ndk = new NDK({
         explicitRelayUrls: defaultRelays,
       });
       await ndk.connect();
       // regex check for email
-      if (req.params.slug.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-        const nip05Response = await nip05.queryProfile(req.params.slug);
+      if (identifier.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+        const nip05Response = await nip05.queryProfile(identifier);
         if (nip05Response) {
           const pubkey = nip05Response.pubkey;
           const user = ndk.getUser({
@@ -151,8 +152,8 @@ export const createServer = (): Express => {
         }
         return res.status(404).json({ message: 'User not found' });
       }
-      if (req.params.slug.startsWith('n')) {
-        const decode = nip19.decode(req.params.slug);
+      if (identifier.startsWith('n')) {
+        const decode = nip19.decode(identifier);
         if (decode.type === 'npub') {
           const pubkey = decode.data;
           const user = ndk.getUser({
@@ -212,7 +213,7 @@ export const createServer = (): Express => {
           return res.json(user.profile);
         }
       } else {
-        const pubkey = req.params.slug;
+        const pubkey = identifier;
         const user = ndk.getUser({
           pubkey,
         });
