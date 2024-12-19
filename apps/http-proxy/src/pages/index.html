@@ -41,7 +41,9 @@
         <h2>/status</h2>
         <p>Check if the API is running.</p>
         <p><strong>Response:</strong> <code>{ "ok": true }</code></p>
-    </div>
+        <p><strong>Example:</strong></p>
+        <pre><code>curl https://nostrhttp.com/status</code></pre>
+    </div>  
 
     <div class="endpoint">
         <span class="method get">GET</span>
@@ -56,6 +58,22 @@
             <li><code>until</code>: Timestamp upper bound</li>
             <li><code>since</code>: Timestamp lower bound</li>
         </ul>
+        <p><strong>Example:</strong></p>
+        <pre><code>curl "https://nostrhttp.com/?relay=wss://relay.damus.io&kinds=1&authors=17717ad4d20e2a425cda0a2195624a0a4a73c4f6975f16b1593fc87fa46f2d58&limit=1"</code></pre>
+        <p><strong>Response:</strong></p>
+        <pre><code>{
+  "events": [
+    {
+      "id": "...",
+      "pubkey": "...",
+      "created_at": 1234567890,
+      "kind": 1,
+      "tags": [],
+      "content": "Hello Nostr!",
+      "sig": "..."
+    }
+  ]
+}</code></pre>
     </div>
 
     <div class="endpoint">
@@ -74,6 +92,17 @@
     [#a-Z]?: string[]
   }
 }</code></pre>
+<p><strong>Example:</strong></p>
+        <pre><code>curl -X POST https://nostrhttp.com/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "relays": ["wss://relay.damus.io"],
+    "filter": {
+      "kinds": [1],
+      "authors": ["17717ad4d20e2a425cda0a2195624a0a4a73c4f6975f16b1593fc87fa46f2d58"],
+      "limit": 1
+    }
+  }'</code></pre>
     </div>
 
     <div class="endpoint">
@@ -91,6 +120,15 @@
             <li>nevent (Event with optional relays)</li>
             <li>nsec (Secret key [NOT RECOMMENDED])</li>
         </ul>
+         <p><strong>Examples:</strong></p>
+        <pre><code># Fetch profile by NIP-05
+curl https://nostrhttp.com/zach@troop.is
+
+# Fetch profile by npub
+curl https://nostrhttp.com/npub1zach44xjpc4yyhx6pgse2cj2pf98838kja03dv2e8ly8lfr094vqvm5dy5
+
+# Fetch note by note ID
+curl https://nostrhttp.com/note1uu802tdfzrd7yu2qsesjztd2ftcsjxds0lr8e64w5x506j5rt28su7mdjp</code></pre>
     </div>
 
     <footer>
