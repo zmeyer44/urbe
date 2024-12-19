@@ -83,9 +83,7 @@ export const createServer = (ndk: NDK): Express => {
         }
       }
       if (Object.keys(parsed.data?.filter || {}).length === 0) {
-        return res
-          .status(400)
-          .json({ message: 'Invalid request', error: 'No filter provided' });
+        return res.status(200).send('Welcome to Nostr Proxy');
       }
 
       if (parsed.data.relays) {
