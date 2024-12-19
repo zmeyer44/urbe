@@ -20,7 +20,7 @@ async function main() {
 
   // const app: Application = express();
   const PORT = process.env.PORT || 8080;
-  const server = createServer();
+  const server = createServer(ndk);
 
   server.listen(PORT, () => {
     console.log(`api running on ${PORT}`);

@@ -9,6 +9,22 @@ export const FilterSchema = z
     until: z.number().int().min(0).optional(),
     limit: z.number().int().min(1).optional(),
   })
-  .and(
-    z.record(z.string().regex(/^#?[a-zA-Z]$/), z.array(z.string())).optional()
+  .catchall(
+    z
+      .string()
+      .array()
+      .superRefine((val, ctx) => {
+        const key = ctx.path[ctx.path.length - 1];
+        if (!(typeof key === 'string' && /^#[a-zA-Z]$/.test(key))) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Dynamic keys must be # followed by a single letter',
+          });
+        }
+      })
   );
+
+export const ProxySchema = z.object({
+  relays: z.array(z.string()).optional(),
+  filter: FilterSchema,
+});
