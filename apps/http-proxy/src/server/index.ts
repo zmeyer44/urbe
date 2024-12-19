@@ -1,11 +1,16 @@
-import NDK, { NDKRelay } from '@nostr-dev-kit/ndk';
-import { type Filter, ProxySchema } from '@repo/schemas/nostr';
+import NDK, { NDKRelay, NDKEvent } from '@nostr-dev-kit/ndk';
+import {
+  EventSchema,
+  type Filter,
+  ProxySchema,
+  RelaysSchema,
+} from '@repo/schemas/nostr';
 import { json, urlencoded } from 'body-parser';
 import cors from 'cors';
 import express, { type Express } from 'express';
 import morgan from 'morgan';
 // @ts-ignore
-import { getPublicKey, nip05, nip19 } from 'nostr-tools';
+import { getPublicKey, nip05, nip19, verifyEvent } from 'nostr-tools';
 
 const defaultRelays = [
   'wss://relay.nostr.band',
@@ -133,6 +138,44 @@ export const createServer = (): Express => {
       });
       const eventsArray = Array.from(events).map((event) => event.rawEvent());
       return res.json(eventsArray);
+    })
+    .post('/event', async (req, res) => {
+      const parsed = EventSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res
+          .status(400)
+          .json({ message: 'Invalid request', error: parsed.error.message });
+      }
+      const eventData = parsed.data;
+      const isVerified = verifyEvent(eventData);
+      if (!isVerified) {
+        return res
+          .status(400)
+          .json({ message: 'Invalid request', error: 'Event is not Valid' });
+      }
+      let relays: string[] = [];
+      const relaysInBody = RelaysSchema.safeParse(req.body);
+      if (relaysInBody.success) {
+        relays = relaysInBody.data.relays;
+      } else {
+        // Check url search params
+        const urlSearchParams = new URLSearchParams(
+          req.query as Record<string, string>
+        );
+        relays = urlSearchParams.getAll('relay');
+      }
+
+      const ndk = new NDK({
+        explicitRelayUrls: defaultRelays,
+      });
+      for (const relayUrl of relays) {
+        ndk.pool.addRelay(new NDKRelay(relayUrl));
+      }
+      await ndk.connect();
+
+      const ndkEvent = new NDKEvent(ndk, eventData);
+      const response = await ndkEvent.publish();
+      return res.json(response);
     })
     .get('/:identifier', async (req, res) => {
       const identifier = req.params.identifier;
