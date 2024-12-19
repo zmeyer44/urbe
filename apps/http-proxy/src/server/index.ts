@@ -43,9 +43,7 @@ export const createServer = (ndk: NDK): Express => {
           req.query as Record<string, string>
         );
         if (urlSearchParams.size === 0) {
-          return res
-            .status(400)
-            .json({ message: 'Invalid request', error: parsed.error.message });
+          return res.status(200).send('Welcome to Nostr Http Proxy');
         }
         const relays = urlSearchParams.getAll('relay');
         const filterStringArrayKeys = ['ids', 'authors'];
@@ -77,13 +75,16 @@ export const createServer = (ndk: NDK): Express => {
         });
 
         if (!parsed.success) {
-          return res
-            .status(400)
-            .json({ message: 'Invalid request', error: parsed.error.message });
+          return res.status(400).json({
+            message: 'Invalid request',
+            error: parsed.error.message,
+          });
         }
       }
       if (Object.keys(parsed.data?.filter || {}).length === 0) {
-        return res.status(200).send('Welcome to Nostr Proxy');
+        return res
+          .status(400)
+          .json({ message: 'Invalid request', error: 'No filter provided' });
       }
 
       if (parsed.data.relays) {
