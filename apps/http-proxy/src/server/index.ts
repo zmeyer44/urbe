@@ -164,18 +164,24 @@ export const createServer = (): Express => {
         );
         relays = urlSearchParams.getAll('relay');
       }
+      if (relays.length === 0) {
+        relays = defaultRelays;
+      }
 
       const ndk = new NDK({
-        explicitRelayUrls: defaultRelays,
+        explicitRelayUrls: relays,
       });
-      for (const relayUrl of relays) {
-        ndk.pool.addRelay(new NDKRelay(relayUrl));
+      try {
+        await ndk.connect(2000);
+        const ndkEvent = new NDKEvent(ndk, eventData);
+        const response = await ndkEvent.publish();
+        return res.json(response);
+      } catch (error) {
+        return res.status(500).json({
+          message: 'Error publishing event',
+          error: error,
+        });
       }
-      await ndk.connect();
-
-      const ndkEvent = new NDKEvent(ndk, eventData);
-      const response = await ndkEvent.publish();
-      return res.json(response);
     })
     .get('/:identifier', async (req, res) => {
       const identifier = req.params.identifier;
