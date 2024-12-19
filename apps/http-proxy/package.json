@@ -12,7 +12,6 @@
   "dependencies": {
     "@nostr-dev-kit/ndk": "^2.10.7",
     "@repo/design-system": "workspace:*",
-    "@repo/env": "workspace:*",
     "@repo/schemas": "workspace:*",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",

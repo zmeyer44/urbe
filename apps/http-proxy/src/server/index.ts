@@ -1,5 +1,4 @@
 import NDK, { NDKRelay } from '@nostr-dev-kit/ndk';
-import { env } from '@repo/env';
 import { type Filter, ProxySchema } from '@repo/schemas/nostr';
 import { json, urlencoded } from 'body-parser';
 import cors from 'cors';
@@ -8,7 +7,14 @@ import morgan from 'morgan';
 // @ts-ignore
 import { getPublicKey, nip19 } from 'nostr-tools';
 
-const defaultRelays = env.DEFAULT_RELAYS.split(',');
+const defaultRelays = [
+  'wss://relay.nostr.band',
+  'wss://relay.damus.io',
+  'wss://nos.lol',
+  'wss://nostr.wine',
+  'wss://nostr.mom',
+  'wss://e.nos.lol',
+];
 export const createServer = (ndk: NDK): Express => {
   const app = express();
   const activePubkey =
@@ -27,7 +33,6 @@ export const createServer = (ndk: NDK): Express => {
       return res.json({ ok: true });
     })
     .get('/', async (req, res) => {
-      const defaultRelays = env.DEFAULT_RELAYS.split(',');
       const ndk = new NDK({
         explicitRelayUrls: defaultRelays,
       });
@@ -99,7 +104,6 @@ export const createServer = (ndk: NDK): Express => {
       return res.json(eventsArray);
     })
     .post('/', async (req, res) => {
-      const defaultRelays = env.DEFAULT_RELAYS.split(',');
       const ndk = new NDK({
         explicitRelayUrls: defaultRelays,
       });
