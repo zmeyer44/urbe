@@ -16,7 +16,9 @@ export async function Feed({
   noteCardProps,
   filter,
 }: FeedProps) {
-  const notes = await fetchNotes({ kinds: [1], limit: 10, ['#p']: ['t'] });
+  const notes = await fetchNotes({
+    ...filter,
+  });
   return (
     <Grid {...gridProps}>
       {notes.map((note, index) => (

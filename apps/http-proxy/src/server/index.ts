@@ -60,9 +60,12 @@ export const createServer = (): Express => {
         const filter: Filter = {};
         urlSearchParams.forEach((value, key) => {
           if (filterStringArrayKeys.includes(key) || key.match(/^#d$/)) {
+            // @ts-ignore
             if (filter[key]) {
+              // @ts-ignore
               filter[key].push(value);
             } else {
+              // @ts-ignore
               filter[key] = [value];
             }
           } else if (key === 'kinds') {

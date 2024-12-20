@@ -1,4 +1,5 @@
 'use server';
+import { env } from '@repo/env';
 import { EventSchema, type Filter } from '@repo/schemas';
 import { z } from 'zod';
 import { createZodFetcher } from 'zod-fetch';
@@ -19,8 +20,11 @@ export async function fetchNotes(filter: Filter, relays?: string[]) {
     .join('&');
   return await fetchWithZod(
     z.array(EventSchema),
-    // `${env.NEXT_PUBLIC_HTTP_PROXY_URL}`,
-    `http://localhost:8080?${queryString}${relays ? `&relays=${relays.join(',')}` : ''}`,
+    `${
+      process.env.NODE_ENV === 'development'
+        ? 'http://localhost:8080'
+        : env.NEXT_PUBLIC_HTTP_PROXY_URL
+    }?${queryString}${relays ? `&relays=${relays.join(',')}` : ''}`,
     {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
