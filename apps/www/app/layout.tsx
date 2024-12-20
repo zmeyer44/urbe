@@ -3,6 +3,7 @@ import '@/styles/colors.css';
 import { DesignSystemProvider } from '@repo/design-system';
 import { fonts } from '@repo/design-system/lib/fonts';
 import type { ReactNode } from 'react';
+import { Providers } from './(main)/providers';
 
 type RootLayoutProperties = {
   readonly children: ReactNode;
@@ -11,7 +12,9 @@ type RootLayoutProperties = {
 const RootLayout = ({ children }: RootLayoutProperties) => (
   <html lang="en" className={fonts} suppressHydrationWarning>
     <body className="bg-background text-foreground">
-      <DesignSystemProvider>{children}</DesignSystemProvider>
+      <DesignSystemProvider>
+        <Providers>{children}</Providers>
+      </DesignSystemProvider>
     </body>
   </html>
 );

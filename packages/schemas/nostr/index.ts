@@ -50,3 +50,22 @@ export const RelaysSchema = z.object({
 });
 
 export type Relays = z.infer<typeof RelaysSchema>;
+
+export const ProfileSchema = z.object({
+  created_at: z.number().int().min(0).nullish(),
+  profileEvent: z
+    .union([EventSchema, z.string().transform((str) => JSON.parse(str))])
+    .pipe(EventSchema)
+    .nullish(),
+  image: z.string().nullish(),
+  name: z.string().nullish(),
+  about: z.string().nullish(),
+  banner: z.string().nullish(),
+  website: z.string().nullish(),
+  nip05: z.string().nullish(),
+  lud16: z.string().nullish(),
+  pubkey: z.string().length(64).toLowerCase().nullish(),
+  npub: z.string().toLowerCase().startsWith('npub').nullish(),
+});
+
+export type Profile = z.infer<typeof ProfileSchema>;

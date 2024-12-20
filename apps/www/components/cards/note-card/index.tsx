@@ -1,29 +1,17 @@
-'use client';
-import { Avatar } from '@repo/design-system/components/ui/avatar';
+import { TextRenderer } from '@/components/text/text-renderer';
 import { Button } from '@repo/design-system/components/ui/button';
 import { cn, relativeTime } from '@repo/design-system/lib/utils/functions';
+import type { Event } from '@repo/schemas';
 import { MessageCircleIcon, MoreHorizontalIcon, ZapIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Suspense } from 'react';
 import type { ComponentProps } from 'react';
+import { Profile, ProfileSkeleton } from './profile';
 
 type NoteCardProps = ComponentProps<'div'> & {
-  note: {
-    author: {
-      name: string;
-      picture?: string;
-      nostrAddress?: string;
-    };
-    content: string;
-    timestamp: number;
-  };
+  note: Event;
 };
 
-export function NoteCard({
-  note: { author, content, timestamp },
-  className,
-  ...noteProps
-}: NoteCardProps) {
-  const router = useRouter();
+export function NoteCard({ note, className, ...noteProps }: NoteCardProps) {
   return (
     <div
       className={cn(
@@ -33,33 +21,12 @@ export function NoteCard({
       {...noteProps}
     >
       <div className="flex items-center justify-between">
-        <button
-          type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            router.push(`/${author.nostrAddress}`);
-          }}
-          className="flex cursor-pointer items-center gap-2"
-        >
-          <Avatar
-            src={author.picture}
-            name={author.name}
-            className="size-6.5 shrink-0 rounded-md"
-          />
-          <div className="flex flex-col">
-            <h3 className="font-semibold text-[.8rem] leading-5">
-              {author.name}
-            </h3>
-            {!!author.nostrAddress && (
-              <span className="font-medium text-[.65rem] text-foreground/70 leading-none">
-                {author.nostrAddress}
-              </span>
-            )}
-          </div>
-        </button>
+        <Suspense fallback={<ProfileSkeleton />}>
+          <Profile pubkey={note.pubkey} />
+        </Suspense>
         <div className="flex items-center gap-2">
           <p className="font-medium text-[.6rem] text-foreground/70 leading-none">
-            {relativeTime(new Date(timestamp))}
+            {relativeTime(new Date(note.created_at * 1000))}
           </p>
           <Button
             variant="ghost"
@@ -70,8 +37,10 @@ export function NoteCard({
           </Button>
         </div>
       </div>
-      <div className="grow">
-        <p className="text-[.8rem] leading-5">{content}</p>
+      <div className="grow overflow-hidden">
+        <p className="text-[.8rem] leading-5">
+          <TextRenderer text={note.content} />
+        </p>
       </div>
       <div className="-my-2 flex items-center gap-1 text-foreground/70">
         <Button variant="ghost" size="sm" className="p-2">

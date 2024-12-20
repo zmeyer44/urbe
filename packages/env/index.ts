@@ -16,6 +16,7 @@ const server: Parameters<typeof createEnv>[0]['server'] = {
 const client: Parameters<typeof createEnv>[0]['client'] = {
   NEXT_PUBLIC_APP_URL: z.string().min(1).url(),
   NEXT_PUBLIC_GOOGLE_MAPS_KEY: z.string(),
+  NEXT_PUBLIC_HTTP_PROXY_URL: z.string().url(),
 
   // Added by Vercel
   NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL: z.string().min(1),
@@ -33,6 +34,7 @@ export const env = createEnv({
     BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN,
 
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_HTTP_PROXY_URL: process.env.NEXT_PUBLIC_HTTP_PROXY_URL,
 
     NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL:
       process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL,

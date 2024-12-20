@@ -44,9 +44,7 @@ export const createServer = (): Express => {
           .status(200)
           .sendFile('index.html', { root: `${__dirname}/../pages` });
       }
-      const ndk = new NDK({
-        explicitRelayUrls: defaultRelays,
-      });
+
       let parsed = ProxySchema.safeParse(req.body);
       if (!parsed.success) {
         // Check url search params
@@ -99,16 +97,20 @@ export const createServer = (): Express => {
           .status(400)
           .json({ message: 'Invalid request', error: 'No filter provided' });
       }
-
-      if (parsed.data.relays) {
-        for (const relayUrl of parsed.data.relays) {
-          ndk.pool.addRelay(new NDKRelay(relayUrl));
-        }
-        await ndk.connect();
-      }
-      const events = await ndk.fetchEvents({
-        ...parsed.data.filter,
+      const ndk = new NDK({
+        explicitRelayUrls: parsed.data.relays?.length
+          ? parsed.data.relays
+          : defaultRelays,
       });
+      await ndk.connect(2000);
+      const events = await ndk.fetchEvents(
+        {
+          ...parsed.data.filter,
+        },
+        {
+          skipVerification: true,
+        }
+      );
       const eventsArray = Array.from(events).map((event) => event.rawEvent());
       return res.json(eventsArray);
     })
@@ -189,86 +191,90 @@ export const createServer = (): Express => {
         explicitRelayUrls: defaultRelays,
       });
       await ndk.connect();
-      // regex check for email
-      if (identifier.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-        const nip05Response = await nip05.queryProfile(identifier);
-        if (nip05Response) {
-          const pubkey = nip05Response.pubkey;
+      try {
+        let profile: unknown;
+        if (identifier.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+          // regex check for NIP-05
+          const nip05Response = await nip05.queryProfile(identifier);
+          if (nip05Response) {
+            const pubkey = nip05Response.pubkey;
+            const user = ndk.getUser({
+              pubkey,
+            });
+            await user.fetchProfile();
+            profile = user.profile;
+          }
+        } else if (identifier.startsWith('n')) {
+          const decode = nip19.decode(identifier);
+          if (decode.type === 'npub') {
+            const pubkey = decode.data;
+            const user = ndk.getUser({
+              pubkey,
+            });
+            await user.fetchProfile();
+            profile = user.profile;
+          } else if (decode.type === 'nprofile') {
+            const nprofile = decode.data;
+            if (nprofile.relays) {
+              for (const relayUrl of nprofile.relays) {
+                ndk.pool.addRelay(new NDKRelay(relayUrl));
+              }
+              await ndk.connect();
+            }
+            const user = ndk.getUser({
+              pubkey: nprofile.pubkey,
+            });
+            await user.fetchProfile();
+            profile = user.profile;
+          } else if (decode.type === 'note') {
+            const noteId = decode.data;
+            const event = await ndk.fetchEvent(noteId);
+            return res.json(event?.rawEvent());
+          } else if (decode.type === 'naddr') {
+            const naddr = decode.data;
+            const event = await ndk.fetchEvent({
+              kinds: [naddr.kind],
+              authors: [naddr.pubkey],
+              '#d': [naddr.identifier],
+            });
+            return res.json(event?.rawEvent());
+          } else if (decode.type === 'nevent') {
+            const nevent = decode.data;
+            if (nevent.relays) {
+              for (const relayUrl of nevent.relays) {
+                ndk.pool.addRelay(new NDKRelay(relayUrl));
+              }
+              await ndk.connect();
+            }
+            const event = await ndk.fetchEvent({
+              ids: [nevent.id],
+            });
+            return res.json(event?.rawEvent());
+          } else if (decode.type === 'nsec') {
+            const nsec = decode.data;
+            const pubkey = await getPublicKey(nsec);
+            const user = ndk.getUser({
+              pubkey,
+            });
+            await user.fetchProfile();
+            profile = user.profile;
+          }
+        } else {
+          const pubkey = identifier;
           const user = ndk.getUser({
             pubkey,
           });
           await user.fetchProfile();
-          return res.json(user.profile);
+          profile = user.profile;
+        }
+        if (profile) {
+          return res.set('Cache-Control', 'public, max-age=3360').json({
+            ...profile,
+          });
         }
         return res.status(404).json({ message: 'User not found' });
-      }
-      if (identifier.startsWith('n')) {
-        const decode = nip19.decode(identifier);
-        if (decode.type === 'npub') {
-          const pubkey = decode.data;
-          const user = ndk.getUser({
-            pubkey,
-          });
-          await user.fetchProfile();
-          return res.json(user.profile);
-        }
-        if (decode.type === 'nprofile') {
-          const profile = decode.data;
-          if (profile.relays) {
-            for (const relayUrl of profile.relays) {
-              ndk.pool.addRelay(new NDKRelay(relayUrl));
-            }
-            await ndk.connect();
-          }
-          const user = ndk.getUser({
-            pubkey: profile.pubkey,
-          });
-          await user.fetchProfile();
-          return res.json(user.profile);
-        }
-        if (decode.type === 'note') {
-          const noteId = decode.data;
-          const event = await ndk.fetchEvent(noteId);
-          return res.json(event?.rawEvent());
-        }
-        if (decode.type === 'naddr') {
-          const naddr = decode.data;
-          const event = await ndk.fetchEvent({
-            kinds: [naddr.kind],
-            authors: [naddr.pubkey],
-            '#d': [naddr.identifier],
-          });
-          return res.json(event?.rawEvent());
-        }
-        if (decode.type === 'nevent') {
-          const nevent = decode.data;
-          if (nevent.relays) {
-            for (const relayUrl of nevent.relays) {
-              ndk.pool.addRelay(new NDKRelay(relayUrl));
-            }
-            await ndk.connect();
-          }
-          const event = await ndk.fetchEvent({
-            ids: [nevent.id],
-          });
-          return res.json(event?.rawEvent());
-        }
-        if (decode.type === 'nsec') {
-          const nsec = decode.data;
-          const pubkey = await getPublicKey(nsec);
-          const user = ndk.getUser({
-            pubkey,
-          });
-          await user.fetchProfile();
-          return res.json(user.profile);
-        }
-      } else {
-        const pubkey = identifier;
-        const user = ndk.getUser({
-          pubkey,
-        });
-        await user.fetchProfile();
-        return res.json(user.profile);
+      } catch (err) {
+        return res.status(404).json({ message: 'User not found' });
       }
     });
 
