@@ -46,7 +46,7 @@ export function TextRenderer({
         } else {
           specialElement = (
             <a
-              className="text-primary hover:underline"
+              className="z-10 text-accent hover:underline"
               href={cleanUrl(currentValue)}
               target="_blank"
               rel="noreferrer"
@@ -59,7 +59,10 @@ export function TextRenderer({
         // specialElement = <span>{cleanUrl(specialValuesArray[index])}</span>;
       } else if (specialValuesArray[index]?.match(hashtagRegex)) {
         specialElement = (
-          <Link href={`/?t=${specialValuesArray[index]?.substring(1)}`}>
+          <Link
+            href={`/?t=${specialValuesArray[index]?.substring(1)}`}
+            className="z-10"
+          >
             <span className="break-words text-primary hover:underline">
               {specialValuesArray[index]}
             </span>

@@ -30,7 +30,11 @@ export function Avatar({
         {...props}
       >
         <BlurImage
-          src={src ?? `${DICEBEAR_AVATAR_URL}${alt}`}
+          src={
+            src
+              ? src.trimEnd()
+              : `${DICEBEAR_AVATAR_URL}${alt}`
+          }
           alt={alt ?? "user"}
           className="z-10 h-full w-full flex-none overflow-hidden object-cover"
           fill={!width}

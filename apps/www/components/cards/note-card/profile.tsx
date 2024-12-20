@@ -2,27 +2,31 @@ import { fetchUser } from '@/features/notes/functions/fetch-user';
 import { Avatar } from '@repo/design-system/components/ui/avatar';
 import { Skeleton } from '@repo/design-system/components/ui/skeleton';
 import { truncateText } from '@repo/design-system/lib/utils';
+import Link from 'next/link';
 
 export async function Profile({ pubkey }: { pubkey: string }) {
   const user = await fetchUser(pubkey);
   return (
-    <div className="flex cursor-pointer items-center gap-2">
+    <Link
+      href={`/${user.npub}`}
+      className="group z-10 flex cursor-pointer items-center gap-2"
+    >
       <Avatar
         src={user.image}
         name={user.name}
         className="size-6.5 shrink-0 rounded-md"
       />
       <div className="flex flex-col gap-y-0.5">
-        <h3 className="truncate font-semibold text-[.8rem] leading-3">
+        <h3 className="truncate font-semibold text-[.8rem] leading-3 group-hover:underline">
           {user.name ?? truncateText(user.npub ?? pubkey, 10)}
         </h3>
         {!!user.nip05 && (
-          <span className="truncate font-medium text-[.65rem] text-foreground/70 leading-none">
+          <span className="truncate font-medium text-[.65rem] text-foreground/70 leading-none group-hover:underline">
             {user.nip05}
           </span>
         )}
       </div>
-    </div>
+    </Link>
   );
 }
 

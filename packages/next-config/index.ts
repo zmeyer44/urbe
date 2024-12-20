@@ -1,3 +1,5 @@
+import withBundleAnalyzer from '@next/bundle-analyzer';
+
 // @ts-expect-error No declaration file
 import { PrismaPlugin } from '@prisma/nextjs-monorepo-workaround-plugin';
 import { env } from '@repo/env';
@@ -114,7 +116,7 @@ export const sentryConfig: Parameters<typeof withSentryConfig>[1] = {
 export const withSentry = (sourceConfig: NextConfig): NextConfig =>
   withSentryConfig(sourceConfig, sentryConfig);
 
-// export const withAnalyzer = (sourceConfig: NextConfig): NextConfig =>
-//   withBundleAnalyzer()(sourceConfig);
+export const withAnalyzer = (sourceConfig: NextConfig): NextConfig =>
+  withBundleAnalyzer()(sourceConfig);
 
 export { withLogtail } from '@logtail/next';

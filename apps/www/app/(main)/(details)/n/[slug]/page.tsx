@@ -1,8 +1,10 @@
-import { Feed } from '@/containers/feed';
-import { getNoteById } from '@/features/notes/functions/get-note-by-id';
+import { TextRenderer } from '@/components/text/text-renderer';
+import { Feed, FeedSkeleton } from '@/containers/feed';
+import { fetchNote } from '@/features/notes/functions/fetch-note';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import { NoteActions } from './_components/note-actions';
-import { NoteHeader } from './_components/note-header';
+import { NoteHeader, NoteHeaderSkeleton } from './_components/note-header';
 export default async function Page({
   params,
   searchParams,
@@ -11,28 +13,38 @@ export default async function Page({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const slug = (await params).slug;
-  const note = getNoteById(slug);
+
+  const note = await fetchNote(slug);
+
   if (!note) {
     return notFound();
   }
+
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-col gap-3 px-2 pt-4">
-        <NoteHeader
-          author={note.author}
-          content={note.content}
-          timestamp={note.timestamp}
-        />
+        <Suspense fallback={<NoteHeaderSkeleton />}>
+          <NoteHeader pubkey={note.pubkey} createdAt={note.created_at} />
+        </Suspense>
         <div className="grow">
-          <p className="text-base">{note.content}</p>
+          <div className="text-base">
+            <TextRenderer text={note.content} />
+          </div>
         </div>
         <NoteActions />
       </div>
       <div className="grow">
-        <Feed
-          gridProps={{ minWidth: 375 }}
-          noteCardProps={{ className: 'bg-opacity-40' }}
-        />
+        <Suspense fallback={<FeedSkeleton gridProps={{ minWidth: 375 }} />}>
+          <Feed
+            gridProps={{ minWidth: 375 }}
+            filter={{
+              kinds: [1],
+              '#e': [note.id],
+              limit: 10,
+            }}
+            noteCardProps={{ className: 'bg-opacity-40' }}
+          />
+        </Suspense>
       </div>
     </div>
   );

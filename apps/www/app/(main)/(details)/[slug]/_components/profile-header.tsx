@@ -1,5 +1,6 @@
 import { Avatar } from '@repo/design-system/components/ui/avatar';
 import {} from '@repo/design-system/lib/utils';
+import type { Profile } from '@repo/schemas';
 import { CheckCircleIcon } from 'lucide-react';
 import Image from 'next/image';
 import { CopyNpubButton } from './copy-npub-button';
@@ -7,24 +8,18 @@ import { FollowButton } from './follow-button';
 import HeaderButtons from './header-buttons';
 
 type ProfileHeaderProps = {
-  profile: {
-    name: string;
-    picture?: string;
-    nostrAddress?: string;
-    banner?: string;
-    npub: string;
-  };
+  profile: Profile;
 };
 export function ProfileHeader({ profile }: ProfileHeaderProps) {
   return (
     <div className="w-full overflow-hidden rounded-lg bg-layer-1">
       <BannerImage image={profile.banner} />
-      <div className="flex flex-wrap justify-between gap-3 @md/main:px-4 px-2.5 @md/main:pt-2.5 pt-0 pb-3">
+      <div className="flex flex-wrap justify-between gap-3 @md/main:px-4 px-2.5 @md/main:pt-2.5 pt-2 pb-3">
         <div className="flex">
           <div className="@lg/main:mt-[-20px] mt-[-20px] @md/main:mr-3 mr-2.5">
             <div className="relative aspect-square overflow-hidden ring-0">
               <Avatar
-                src={profile.picture}
+                src={profile.image}
                 name={profile.name}
                 className="@lg/main:size-[65px] @md/main:size-[60px] size-[55px] @lg/main:rounded-[0.6rem] rounded-lg"
               />
@@ -37,10 +32,10 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
               </h2>
               <CopyNpubButton npub={profile.npub} />
             </div>
-            {profile.nostrAddress && (
+            {profile.nip05 && (
               <div className="flex items-center gap-1">
                 <p className="@md/main:text-xs text-[11px] text-foreground/70">
-                  {profile.nostrAddress}
+                  {profile.nip05}
                 </p>
                 <CheckCircleIcon className="h-3 w-3 text-primary" />
               </div>

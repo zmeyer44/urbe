@@ -1,7 +1,12 @@
-import NDK, { NDKRelay, NDKEvent } from '@nostr-dev-kit/ndk';
+import NDK, {
+  NDKRelay,
+  NDKEvent,
+  type NDKUserProfile,
+} from '@nostr-dev-kit/ndk';
 import {
   EventSchema,
   type Filter,
+  ProfileSchema,
   ProxySchema,
   RelaysSchema,
 } from '@repo/schemas/nostr';
@@ -59,6 +64,7 @@ export const createServer = (): Express => {
 
         const filter: Filter = {};
         urlSearchParams.forEach((value, key) => {
+          console.log('KEY', key);
           if (filterStringArrayKeys.includes(key) || key.match(/^#d$/)) {
             // @ts-ignore
             if (filter[key]) {
@@ -118,26 +124,18 @@ export const createServer = (): Express => {
       return res.json(eventsArray);
     })
     .post('/', async (req, res) => {
-      const ndk = new NDK({
-        explicitRelayUrls: defaultRelays,
-      });
       const parsed = ProxySchema.safeParse(req.body);
-
       if (!parsed.success) {
         return res
           .status(400)
           .json({ message: 'Invalid request', error: parsed.error.message });
       }
-      if (parsed.data.relays) {
-        for (const relayUrl of parsed.data.relays) {
-          ndk.pool.addRelay(new NDKRelay(relayUrl));
-        }
-        await ndk.connect();
-      }
-      const jeff = ndk.getUser({
-        pubkey: activePubkey,
+      const ndk = new NDK({
+        explicitRelayUrls: parsed.data.relays?.length
+          ? parsed.data.relays
+          : defaultRelays,
       });
-      await jeff.fetchProfile();
+      await ndk.connect();
       const events = await ndk.fetchEvents({
         ...parsed.data.filter,
       });
@@ -188,6 +186,28 @@ export const createServer = (): Express => {
         });
       }
     })
+    .get('/feed/:pubkey', async (req, res) => {
+      const pubkey = req.params.pubkey;
+      const ndk = new NDK({
+        explicitRelayUrls: defaultRelays,
+      });
+      await ndk.connect();
+      try {
+        const user = ndk.getUser({
+          pubkey,
+        });
+        const contactList = await user.follows();
+        const feed = await ndk.fetchEvents({
+          kinds: [1],
+          authors: Array.from(contactList).map((contact) => contact.pubkey),
+          limit: 100,
+        });
+        const feedArray = Array.from(feed).map((event) => event.rawEvent());
+        return res.json(feedArray);
+      } catch (err) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+    })
     .get('/:identifier', async (req, res) => {
       const identifier = req.params.identifier;
       const ndk = new NDK({
@@ -195,12 +215,14 @@ export const createServer = (): Express => {
       });
       await ndk.connect();
       try {
-        let profile: unknown;
+        let profile: NDKUserProfile | undefined;
+        let pubkey = '';
+
         if (identifier.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
           // regex check for NIP-05
           const nip05Response = await nip05.queryProfile(identifier);
           if (nip05Response) {
-            const pubkey = nip05Response.pubkey;
+            pubkey = nip05Response.pubkey;
             const user = ndk.getUser({
               pubkey,
             });
@@ -210,7 +232,7 @@ export const createServer = (): Express => {
         } else if (identifier.startsWith('n')) {
           const decode = nip19.decode(identifier);
           if (decode.type === 'npub') {
-            const pubkey = decode.data;
+            pubkey = decode.data;
             const user = ndk.getUser({
               pubkey,
             });
@@ -224,8 +246,9 @@ export const createServer = (): Express => {
               }
               await ndk.connect();
             }
+            pubkey = nprofile.pubkey;
             const user = ndk.getUser({
-              pubkey: nprofile.pubkey,
+              pubkey,
             });
             await user.fetchProfile();
             profile = user.profile;
@@ -255,7 +278,7 @@ export const createServer = (): Express => {
             return res.json(event?.rawEvent());
           } else if (decode.type === 'nsec') {
             const nsec = decode.data;
-            const pubkey = await getPublicKey(nsec);
+            pubkey = await getPublicKey(nsec);
             const user = ndk.getUser({
               pubkey,
             });
@@ -263,16 +286,22 @@ export const createServer = (): Express => {
             profile = user.profile;
           }
         } else {
-          const pubkey = identifier;
+          pubkey = identifier;
           const user = ndk.getUser({
             pubkey,
           });
           await user.fetchProfile();
           profile = user.profile;
         }
-        if (profile) {
+
+        const parsedProfile = ProfileSchema.safeParse({
+          ...profile,
+          pubkey,
+          npub: nip19.npubEncode(pubkey),
+        });
+        if (parsedProfile.success) {
           return res.set('Cache-Control', 'public, max-age=3360').json({
-            ...profile,
+            ...parsedProfile.data,
           });
         }
         return res.status(404).json({ message: 'User not found' });

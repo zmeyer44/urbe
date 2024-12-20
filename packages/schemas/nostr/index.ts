@@ -30,6 +30,18 @@ export const FilterSchema = z.object({
   since: z.number().int().min(0).optional(),
   until: z.number().int().min(0).optional(),
   limit: z.number().int().min(1).optional(),
+  '#e': z.array(z.string()).optional(),
+  '#p': z.array(z.string()).optional(),
+  '#d': z.array(z.string()).optional(),
+  '#a': z.array(z.string()).optional(),
+  '#c': z.array(z.string()).optional(),
+  '#g': z.array(z.string()).optional(),
+  '#k': z.array(z.string()).optional(),
+  '#r': z.array(z.string()).optional(),
+  '#s': z.array(z.string()).optional(),
+  '#t': z.array(z.string()).optional(),
+  '#u': z.array(z.string()).optional(),
+  '#w': z.array(z.string()).optional(),
 });
 
 export type Filter = z.infer<typeof FilterSchema>;
@@ -60,7 +72,7 @@ export const RelaysSchema = z.object({
 export type Relays = z.infer<typeof RelaysSchema>;
 
 export const ProfileSchema = z.object({
-  created_at: z.number().int().min(0).nullish(),
+  created_at: z.coerce.number().int().min(0).nullish(),
   profileEvent: z
     .union([EventSchema, z.string().transform((str) => JSON.parse(str))])
     .pipe(EventSchema)
@@ -72,8 +84,8 @@ export const ProfileSchema = z.object({
   website: z.string().nullish(),
   nip05: z.string().nullish(),
   lud16: z.string().nullish(),
-  pubkey: z.string().length(64).toLowerCase().nullish(),
-  npub: z.string().toLowerCase().startsWith('npub').nullish(),
+  pubkey: z.string().length(64).toLowerCase(),
+  npub: z.string().toLowerCase().startsWith('npub'),
 });
 
 export type Profile = z.infer<typeof ProfileSchema>;
