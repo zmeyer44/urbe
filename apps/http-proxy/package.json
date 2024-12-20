@@ -13,6 +13,7 @@
     "@nostr-dev-kit/ndk": "^2.10.7",
     "@repo/design-system": "workspace:*",
     "@repo/schemas": "workspace:*",
+    "@repo/utils": "workspace:*",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "express": "^4.21.2",

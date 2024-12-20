@@ -51,6 +51,9 @@ importers:
       '@repo/schemas':
         specifier: workspace:*
         version: link:../../packages/schemas
+      '@repo/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       body-parser:
         specifier: ^1.20.2
         version: 1.20.3
@@ -133,6 +136,9 @@ importers:
       '@repo/tailwind-config':
         specifier: workspace:*
         version: link:../../packages/tailwind-config
+      '@repo/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       '@sentry/nextjs':
         specifier: ^8.42.0
         version: 8.43.0(@opentelemetry/core@1.29.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.56.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.29.0(@opentelemetry/api@1.9.0))(next@15.1.1-canary.14(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)(webpack@5.97.1)
@@ -523,6 +529,22 @@ importers:
         version: 3.4.16(ts-node@10.9.2(@types/node@22.10.1)(typescript@5.7.2))
 
   packages/typescript-config: {}
+
+  packages/utils:
+    dependencies:
+      zod:
+        specifier: ^3.23.8
+        version: 3.24.0
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/node':
+        specifier: 22.10.1
+        version: 22.10.1
+      typescript:
+        specifier: ^5.7.2
+        version: 5.7.2
 
 packages:
 
