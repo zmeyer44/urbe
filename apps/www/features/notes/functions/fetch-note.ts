@@ -14,16 +14,21 @@ export async function fetchNote(identifier: string, relays?: string[]) {
         : env.NEXT_PUBLIC_HTTP_PROXY_URL
     }/${identifier}${relays ? `?relays=${relays.join(',')}` : ''}`
   );
-  return await fetchWithZod(
-    EventSchema,
-    `${
-      process.env.NODE_ENV === 'development'
-        ? 'http://localhost:8080'
-        : env.NEXT_PUBLIC_HTTP_PROXY_URL
-    }/${identifier}${relays ? `?relays=${relays.join(',')}` : ''}`,
-    {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    }
-  );
+  try {
+    return await fetchWithZod(
+      EventSchema,
+      `${
+        process.env.NODE_ENV === 'development'
+          ? 'http://localhost:8080'
+          : env.NEXT_PUBLIC_HTTP_PROXY_URL
+      }/${identifier}${relays ? `?relays=${relays.join(',')}` : ''}`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+  } catch (error) {
+    console.error('Error fetching note', error);
+    return null;
+  }
 }

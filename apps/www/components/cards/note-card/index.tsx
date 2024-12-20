@@ -45,7 +45,7 @@ export function NoteCard({
           </Button>
         </div>
       </div>
-      <div className="grow">
+      <div className="grow overflow-hidden">
         <div className="text-[.8rem] leading-5">
           {/* {!!link && (
             <Link href={link} className="-z-10 absolute inset-0 bg-red-500" />

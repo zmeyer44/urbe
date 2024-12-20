@@ -36,8 +36,7 @@ import { cn } from '@repo/design-system/lib/utils';
 import {
   ArchiveX,
   ArrowLeftFromLineIcon,
-  BookOpenIcon,
-  BotIcon,
+  Calendar1Icon,
   ChevronRightIcon,
   Command,
   File,
@@ -45,6 +44,7 @@ import {
   Inbox,
   LifeBuoyIcon,
   MenuIcon,
+  MessageCircleIcon,
   MoreHorizontalIcon,
   Send,
   SendIcon,
@@ -68,7 +68,7 @@ const data: {
     url: string;
     icon: React.ElementType;
     isActive?: boolean;
-    items: {
+    items?: {
       title: string;
       url: string;
     }[];
@@ -119,65 +119,47 @@ const data: {
   navSub: [
     {
       title: 'Feed',
-      url: '#',
+      url: '/',
       icon: SquareTerminalIcon,
       isActive: true,
       items: [
         {
           title: 'Latest',
-          url: '',
+          url: '/',
         },
         {
           title: 'Replies',
-          url: '',
+          url: '/',
         },
         {
           title: 'Quotes',
-          url: '',
+          url: '/',
         },
       ],
     },
     {
       title: 'Events',
-      url: '#',
-      icon: BotIcon,
+      url: '/',
+      icon: Calendar1Icon,
       items: [
         {
           title: 'Latest',
-          url: '',
+          url: '/',
         },
         {
           title: 'Calendar',
-          url: '',
+          url: '/',
         },
         {
           title: 'Create',
-          url: '#',
+          url: '/',
         },
       ],
     },
     {
       title: 'Messages',
       url: '#',
-      icon: BookOpenIcon,
-      items: [
-        {
-          title: 'Introduction',
-          url: '#',
-        },
-        {
-          title: 'Get Started',
-          url: '#',
-        },
-        {
-          title: 'Tutorials',
-          url: '#',
-        },
-        {
-          title: 'Changelog',
-          url: '#',
-        },
-      ],
+      icon: MessageCircleIcon,
     },
     {
       title: 'Settings',

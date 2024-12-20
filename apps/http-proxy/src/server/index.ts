@@ -127,9 +127,10 @@ export const createServer = (): Express => {
       const parsed = ProxySchema.safeParse(req.body);
       if (!parsed.success) {
         return res
-          .status(400)
+          .status(405)
           .json({ message: 'Invalid request', error: parsed.error.message });
       }
+      console.log('PARSED', parsed.data);
       const ndk = new NDK({
         explicitRelayUrls: parsed.data.relays?.length
           ? parsed.data.relays

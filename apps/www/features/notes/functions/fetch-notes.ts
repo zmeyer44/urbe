@@ -41,17 +41,22 @@ const fetchWithZod = createZodFetcher();
 //   );
 // }
 export async function fetchNotes(filter: Filter, relays?: string[]) {
-  return await fetchWithZod(
-    z.array(EventSchema),
-    `${
-      process.env.NODE_ENV === 'development'
-        ? 'http://localhost:8080'
-        : env.NEXT_PUBLIC_HTTP_PROXY_URL
-    }`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ filter, relays }),
-    }
-  );
+  try {
+    return await fetchWithZod(
+      z.array(EventSchema),
+      `${
+        process.env.NODE_ENV === 'development'
+          ? 'http://localhost:8080'
+          : env.NEXT_PUBLIC_HTTP_PROXY_URL
+      }`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filter, relays }),
+      }
+    );
+  } catch (error) {
+    console.error('Error fetching notes', error);
+    return [];
+  }
 }

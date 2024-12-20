@@ -80,9 +80,7 @@ export function TextRenderer({
   return (
     <>
       {Elements.map((el, index) => (
-        <span key={index} className="inline-block">
-          {el}
-        </span>
+        <span key={index}>{el}</span>
       ))}
     </>
   );
