@@ -46,10 +46,11 @@ export function TextRenderer({
         } else {
           specialElement = (
             <a
-              className="z-10 text-accent hover:underline"
+              className="relative z-10 text-accent hover:underline"
               href={cleanUrl(currentValue)}
               target="_blank"
               rel="noreferrer"
+              onClick={(e) => e.stopPropagation()}
             >
               {cleanUrl(currentValue)}
             </a>
