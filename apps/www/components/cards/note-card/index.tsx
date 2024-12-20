@@ -44,11 +44,15 @@ export function NoteCard({
           </Button>
         </div>
       </div>
-      <div className="z-10 grow overflow-hidden">
+      <div className="relative z-10 grow">
         <div className="text-[.8rem] leading-5">
+          {/* {!!link && (
+            <Link href={link} className="-z-10 absolute inset-0 bg-red-500" />
+          )} */}
           <TextRenderer text={note.content} />
         </div>
       </div>
+
       <div className="-my-2 flex items-center gap-1 text-foreground/70">
         <Button variant="ghost" size="sm" className="z-10 p-2">
           <MessageCircleIcon className="!size-3.5" />
@@ -59,7 +63,7 @@ export function NoteCard({
           <span className="text-[.6rem] leading-none">1</span>
         </Button>
       </div>
-      {!!link && <Link href={link} className="absolute inset-0 z-0" />}
+      {!!link && <Link href={link} className="absolute inset-0" />}
     </div>
   );
 }

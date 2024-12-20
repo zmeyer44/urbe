@@ -46,7 +46,7 @@ export function TextRenderer({
         } else {
           specialElement = (
             <a
-              className="z-10 text-accent hover:underline"
+              className="text-accent hover:underline"
               href={cleanUrl(currentValue)}
               target="_blank"
               rel="noreferrer"
@@ -79,7 +79,9 @@ export function TextRenderer({
   return (
     <>
       {Elements.map((el, index) => (
-        <span key={index}>{el}</span>
+        <span key={index} className="inline-block">
+          {el}
+        </span>
       ))}
     </>
   );
