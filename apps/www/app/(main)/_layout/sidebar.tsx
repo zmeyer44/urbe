@@ -34,7 +34,6 @@ import {
 import { useIsMobile } from '@repo/design-system/hooks/use-mobile';
 import { cn } from '@repo/design-system/lib/utils';
 import {
-  AnchorIcon,
   ArchiveX,
   ArrowLeftFromLineIcon,
   BookOpenIcon,
@@ -43,13 +42,10 @@ import {
   Command,
   File,
   FolderIcon,
-  FrameIcon,
   Inbox,
   LifeBuoyIcon,
-  MapIcon,
   MenuIcon,
   MoreHorizontalIcon,
-  PieChartIcon,
   Send,
   SendIcon,
   Settings2Icon,
@@ -60,7 +56,34 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-const data = {
+const data: {
+  navMain: {
+    title: string;
+    url: string;
+    icon: React.ElementType;
+    isActive: boolean;
+  }[];
+  navSub: {
+    title: string;
+    url: string;
+    icon: React.ElementType;
+    isActive?: boolean;
+    items: {
+      title: string;
+      url: string;
+    }[];
+  }[];
+  projects: {
+    name: string;
+    url: string;
+    icon: React.ElementType;
+  }[];
+  navSecondary: {
+    title: string;
+    url: string;
+    icon: React.ElementType;
+  }[];
+} = {
   navMain: [
     {
       title: 'Inbox',
@@ -101,16 +124,16 @@ const data = {
       isActive: true,
       items: [
         {
-          title: 'History',
-          url: '#',
+          title: 'Latest',
+          url: '',
         },
         {
-          title: 'Starred',
-          url: '#',
+          title: 'Replies',
+          url: '',
         },
         {
-          title: 'Settings',
-          url: '#',
+          title: 'Quotes',
+          url: '',
         },
       ],
     },
@@ -120,15 +143,15 @@ const data = {
       icon: BotIcon,
       items: [
         {
-          title: 'Genesis',
-          url: '#',
+          title: 'Latest',
+          url: '',
         },
         {
-          title: 'Explorer',
-          url: '#',
+          title: 'Calendar',
+          url: '',
         },
         {
-          title: 'Quantum',
+          title: 'Create',
           url: '#',
         },
       ],
@@ -180,12 +203,24 @@ const data = {
       ],
     },
   ],
+  projects: [
+    // {
+    //   name: 'Design Engineering',
+    //   url: '#',
+    //   icon: FrameIcon,
+    // },
+    // {
+    //   name: 'Sales & Marketing',
+    //   url: '#',
+    //   icon: PieChartIcon,
+    // },
+    // {
+    //   name: 'Travel',
+    //   url: '#',
+    //   icon: MapIcon,
+    // },
+  ],
   navSecondary: [
-    {
-      title: 'Webhooks',
-      url: '/webhooks',
-      icon: AnchorIcon,
-    },
     {
       title: 'Support',
       url: '#',
@@ -195,23 +230,6 @@ const data = {
       title: 'Feedback',
       url: '#',
       icon: SendIcon,
-    },
-  ],
-  projects: [
-    {
-      name: 'Design Engineering',
-      url: '#',
-      icon: FrameIcon,
-    },
-    {
-      name: 'Sales & Marketing',
-      url: '#',
-      icon: PieChartIcon,
-    },
-    {
-      name: 'Travel',
-      url: '#',
-      icon: MapIcon,
     },
   ],
 };
@@ -370,54 +388,56 @@ export function GlobalSidebar({ children }: { children: React.ReactNode }) {
                 ))}
               </SidebarMenu>
             </SidebarGroup>
-            <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-              <SidebarGroupLabel>Projects</SidebarGroupLabel>
-              <SidebarMenu>
-                {data.projects.map((item) => (
-                  <SidebarMenuItem key={item.name}>
-                    <SidebarMenuButton asChild>
-                      <a href={item.url}>
-                        <item.icon />
-                        <span>{item.name}</span>
-                      </a>
+            {!!data.projects.length && (
+              <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+                <SidebarGroupLabel>Projects</SidebarGroupLabel>
+                <SidebarMenu>
+                  {data.projects.map((item) => (
+                    <SidebarMenuItem key={item.name}>
+                      <SidebarMenuButton asChild>
+                        <a href={item.url}>
+                          <item.icon />
+                          <span>{item.name}</span>
+                        </a>
+                      </SidebarMenuButton>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <SidebarMenuAction showOnHover>
+                            <MoreHorizontalIcon />
+                            <span className="sr-only">More</span>
+                          </SidebarMenuAction>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                          className="w-48 border-background bg-layer-1"
+                          side="bottom"
+                          align="end"
+                        >
+                          <DropdownMenuItem>
+                            <FolderIcon className="text-muted-foreground" />
+                            <span>View Project</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <ShareIcon className="text-muted-foreground" />
+                            <span>Share Project</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem>
+                            <Trash2Icon className="text-muted-foreground" />
+                            <span>Delete Project</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </SidebarMenuItem>
+                  ))}
+                  <SidebarMenuItem>
+                    <SidebarMenuButton>
+                      <MoreHorizontalIcon />
+                      <span>More</span>
                     </SidebarMenuButton>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <SidebarMenuAction showOnHover>
-                          <MoreHorizontalIcon />
-                          <span className="sr-only">More</span>
-                        </SidebarMenuAction>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent
-                        className="w-48 border-background bg-layer-1"
-                        side="bottom"
-                        align="end"
-                      >
-                        <DropdownMenuItem>
-                          <FolderIcon className="text-muted-foreground" />
-                          <span>View Project</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <ShareIcon className="text-muted-foreground" />
-                          <span>Share Project</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <Trash2Icon className="text-muted-foreground" />
-                          <span>Delete Project</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
                   </SidebarMenuItem>
-                ))}
-                <SidebarMenuItem>
-                  <SidebarMenuButton>
-                    <MoreHorizontalIcon />
-                    <span>More</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarGroup>
+                </SidebarMenu>
+              </SidebarGroup>
+            )}
             <SidebarGroup className="mt-auto">
               <SidebarGroupContent>
                 <SidebarMenu>
