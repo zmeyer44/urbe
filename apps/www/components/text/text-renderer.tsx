@@ -46,7 +46,7 @@ export function TextRenderer({
         } else {
           specialElement = (
             <a
-              className="text-accent hover:underline"
+              className="z-10 text-accent hover:underline"
               href={cleanUrl(currentValue)}
               target="_blank"
               rel="noreferrer"

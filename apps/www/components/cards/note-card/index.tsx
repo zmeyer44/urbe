@@ -27,6 +27,7 @@ export function NoteCard({
       )}
       {...noteProps}
     >
+      {!!link && <Link href={link} className="absolute inset-0 z-0 block" />}
       <div className="flex items-center justify-between">
         <Suspense fallback={<ProfileSkeleton />}>
           <Profile pubkey={note.pubkey} />
@@ -63,7 +64,6 @@ export function NoteCard({
           <span className="text-[.6rem] leading-none">1</span>
         </Button>
       </div>
-      {!!link && <Link href={link} className="absolute inset-0" />}
     </div>
   );
 }
