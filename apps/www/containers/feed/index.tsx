@@ -59,12 +59,13 @@ export async function Feed({
 export async function FeedSkeleton({
   gridProps = { minWidth: 375 },
   noteCardProps,
+  length = 10,
 }: ComponentProps<typeof Feed> & {
   length?: number;
 }) {
   return (
     <Grid {...gridProps}>
-      {Array.from({ length: length || 10 }).map((_, index) => (
+      {Array.from({ length: length }).map((_, index) => (
         <Skeleton
           key={index}
           {...noteCardProps}
