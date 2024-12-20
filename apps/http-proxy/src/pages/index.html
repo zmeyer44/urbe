@@ -168,6 +168,24 @@ curl https://nostrhttp.com/note1uu802tdfzrd7yu2qsesjztd2ftcsjxds0lr8e64w5x506j5r
         </ul>
         <p><strong>Response:</strong> Returns the publish response from the relays</p>
     </div>
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <h2>/feed/:pubkey</h2>
+        <p>Fetch the feed (recent notes from followed accounts) for a given pubkey.</p>
+        <p><strong>Parameters:</strong></p>
+        <ul>
+            <li><code>pubkey</code> - The public key to fetch the feed for</li>
+        </ul>
+        <p><strong>Example:</strong></p>
+        <pre><code>curl https://nostrhttp.com/feed/1739d937dc8c0c7370aa27585938c119e25c41f6c441a5d34c6d38503e3136ef</code></pre>
+        <p><strong>Notes:</strong></p>
+        <ul>
+            <li>Returns up to 100 most recent notes (kind 1) from accounts followed by the specified pubkey</li>
+            <li>Uses the default relay set</li>
+            <li>Requires that the user has published a contact list (kind 3)</li>
+        </ul>
+        <p><strong>Response:</strong> Returns an array of Nostr events</p>
+    </div>
     <footer>
         <p><small>Powered by <a href="https://github.com/nostr-dev-kit/ndk">NDK (Nostr Development Kit)</a>. Source code <a href="https://github.com/zmeyer44/urbe/tree/main/apps/http-proxy">here</a>.</small></p>
     </footer>
